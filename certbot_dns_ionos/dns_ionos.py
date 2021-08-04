@@ -2,6 +2,7 @@
 import json
 import logging
 import time
+import tldextract
 
 import requests
 import zope.interface
@@ -148,7 +149,9 @@ class _ionosClient(object):
         :param int record_ttl: The record TTL (number of seconds that the record may be cached).
         :raises certbot.errors.PluginError: if an error occurs communicating with the IONOS API
         """
-        zone_id, zone_name = self._find_managed_zone_id(domain)
+
+        reg_domain = tldextract.extract(domain).registered_domain
+        zone_id, zone_name = self._find_managed_zone_id(reg_domain)
         if zone_id is None:
             raise errors.PluginError("Domain not known")
         logger.debug("domain found: %s with id: %s", zone_name, zone_id)
@@ -176,7 +179,9 @@ class _ionosClient(object):
         :param int record_ttl: The record TTL (number of seconds that the record may be cached).
         :raises certbot.errors.PluginError: if an error occurs communicating with the IONOS API
         """
-        zone_id, zone_name = self._find_managed_zone_id(domain)
+
+        reg_domain = tldextract.extract(domain).registered_domain
+        zone_id, zone_name = self._find_managed_zone_id(reg_domain)
         if zone_id is None:
             raise errors.PluginError("Domain not known")
         logger.debug("domain found: %s with id: %s", zone_name, zone_id)
